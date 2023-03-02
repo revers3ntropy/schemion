@@ -6,8 +6,11 @@ const tsify = require("tsify");
 const sourcemaps = require("gulp-sourcemaps");
 const buffer = require("vinyl-buffer");
 const fs = require("fs");
+const ts = require('gulp-typescript');
+const rename = require('gulp-rename');
 
 const packageJson = JSON.parse(String(fs.readFileSync("./package.json")));
+const latestVersionFileName = `${packageJson.name}.${packageJson.version}`;
 
 function compileTs (filename: string) {
 	return browserify({
@@ -19,7 +22,7 @@ function compileTs (filename: string) {
 	})
 		.plugin(tsify)
 		.bundle()
-		.pipe(source(filename))
+		.pipe(source(`${filename}.js`))
 		.pipe(buffer())
 		.pipe(sourcemaps.init({ loadMaps: true }))
 		.pipe(terser())
@@ -27,7 +30,32 @@ function compileTs (filename: string) {
 		.pipe(gulp.dest("dist"));
 }
 
-exports.default = gulp.parallel(
-	() => compileTs(`${packageJson.name}.${packageJson.version}.js`),
-	() => compileTs(`index.js`)
+function emitDts (filename: string) {
+	const tsProject = ts.createProject("tsconfig.json");
+	return tsProject
+		.src()
+		.pipe(tsProject())
+		.dts
+		.pipe(rename(`${filename}.d.ts`))
+		.pipe(gulp.dest(`dist`));
+}
+
+function copyBuilt () {
+	gulp.src('./dist/index.js')
+		.pipe(rename(`${latestVersionFileName}.js`))
+		.pipe(gulp.dest(`dist`));
+	gulp.src('./dist/index.js.map')
+		.pipe(rename(`${latestVersionFileName}.js.map`))
+		.pipe(gulp.dest(`dist`));
+	gulp.src('./dist/index.d.ts')
+		.pipe(rename(`${latestVersionFileName}.d.ts`))
+		.pipe(gulp.dest(`dist`));
+}
+
+exports.default = gulp.series(
+	gulp.parallel(
+		() => compileTs(`index`),
+		() => emitDts(`index`)
+	),
+	copyBuilt
 );
