@@ -96,83 +96,45 @@ describe('`matches` Primitives', () => {
             ];
         }
     });
-});
 
-describe('`matches` Arrays', () => {
-    test('Matches array of numbers', () => {
-        expect(matches([1, 2, 3], ['number']))
-            .toBe(false);
-        expect(matches([1, 2, 3], ['string']))
-            .toBe(false);
-        expect(matches([], ['string']))
-            .toBe(false);
-        expect(matches(null, ['string']))
-            .toBe(false);
-        expect(matches('', ['string']))
-            .toBe(false);
-        expect(matches([1, 2, 3], ['number', 'number']))
-            .toBe(false);
-        expect(matches([1, 2, 3], ['number', 'number', 'number']))
-            .toBe(true);
-        expect(matches([[ 1 ]], [[ 'number' ]]))
-            .toBe(true);
-        expect(matches([[ 1 ], 2], [[ 'number', 'number' ]]))
-            .toBe(false);
-        expect(matches([[ 1 ], [ 2 ]], [[ 'number', 'number' ]]))
-            .toBe(false);
-        expect(matches([[ 1, 2 ]], [[ 'number', 'number' ]]))
-            .toBe(true);
-        expect(matches([[ ]], [[ ]]))
-            .toBe(true);
-        expect(matches([], []))
-            .toBe(true);
-        expect(matches([ 2 ], []))
-            .toBe(false);
-        expect(matches([[]], []))
-            .toBe(false);
+    test('Matches function', () => {
+        expect(matches(() => {}, 'function')).toBe(true);
+        expect(matches(Example, 'function')).toBe(true);
+        expect(matches(new Example, 'function')).toBe(false);
+        expect(matches(undefined, 'function')).toBe(false);
+        expect(matches(null, 'function')).toBe(false);
+        expect(matches(1, 'function')).toBe(false);
+        expect(matches({}, 'function')).toBe(false);
     });
 
-    test(`Matches 'any'`, () => {
-        expect(matches(1, 'any'))
-            .toBe(true);
-        expect(matches('1', ['any']))
-            .toBe(false);
-        expect(matches(true, ['any']))
-            .toBe(false);
-        expect(matches({}, ['any']))
-            .toBe(false);
-        expect(matches([], ['any']))
-            .toBe(false);
-        expect(matches([1], ['any']))
-            .toBe(true);
-        expect(matches([1, 2], ['any']))
-            .toBe(false);
-        expect(matches([1, '2'], ['number', 'any']))
-            .toBe(true);
-        expect(matches([1, '2', true], ['any']))
-            .toBe(false);
-        expect(matches([1, '2', true], 'any'))
-            .toBe(true);
-        expect(matches(Example, 'any'))
-            .toBe(true);
-        expect(matches(new Example, 'any'))
-            .toBe(true);
-        expect(matches([1, '2'], ['any', 'string']))
-            .toBe(true);
-        expect(matches([1, '2'], ['any', 'number']))
-            .toBe(false);
+    test('Matches undefined', () => {
+        expect(matches(undefined, 'undefined')).toBe(true);
+        expect(matches(void 0, 'undefined')).toBe(true);
+        expect(matches(null, 'undefined')).toBe(false);
+        expect(matches(1, 'undefined')).toBe(false);
+        expect(matches(Example, 'undefined')).toBe(false);
+        expect(matches({}, 'undefined')).toBe(false);
+        expect(matches(() => {}, 'undefined')).toBe(false);
     });
-});
 
-describe('Invalid Schema', () => {
-    test('Invalid schema', () => {
-        expect(() => matches(1, 'invalid' as any))
-            .toThrowError('Invalid schema');
-        expect(() => matches(1, ['invalid' as any]))
-            .toThrowError('Invalid schema');
-        expect(() => matches([], ['invalid' as any]))
-            .toThrowError('Invalid schema');
-        expect(() => matches(1, Example as any))
-            .toThrowError('Invalid schema');
+    test('Matches any', () => {
+        expect(matches(undefined, 'any')).toBe(true);
+        expect(matches(null, 'any')).toBe(true);
+        expect(matches(1, 'any')).toBe(true);
+        expect(matches(Example, 'any')).toBe(true);
+        expect(matches(new Example, 'any')).toBe(true);
+        expect(matches({}, 'any')).toBe(true);
+        expect(matches((): void => void 0, 'any')).toBe(true);
+    });
+
+    test('Matches symbol', () => {
+        expect(matches(Symbol(), 'symbol')).toBe(true);
+        expect(matches(Symbol('foo'), 'symbol')).toBe(true);
+        expect(matches(undefined, 'symbol')).toBe(false);
+        expect(matches(null, 'symbol')).toBe(false);
+        expect(matches(1, 'symbol')).toBe(false);
+        expect(matches(Example, 'symbol')).toBe(false);
+        expect(matches({}, 'symbol')).toBe(false);
+        expect(matches((): void => void 0, 'symbol')).toBe(false);
     });
 });
