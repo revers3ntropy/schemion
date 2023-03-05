@@ -33,7 +33,7 @@ export function validateSchema(schema: unknown): asserts schema is Schema;
 export function matches<T extends Schema>(o: unknown, schema: T, defaults?: T extends object ? {
     [P in keyof T]?: SchemaResult<T[P]>;
 } | null : null, config?: Config): o is SchemaResult<T>;
-export const VERSION = "0.0.7";
+export const VERSION = "0.0.8";
 const schemion: {
     matches: typeof matches;
     VERSION: string;
