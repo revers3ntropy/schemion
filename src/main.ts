@@ -146,7 +146,8 @@ export function matches<T extends Schema> (
     return false;
 }
 
-export const VERSION = '__CONST_VERSION';
+// replaced at compile time with version from package.json
+export const VERSION = '__VERSION__';
 
 const schemion = {
     matches,
