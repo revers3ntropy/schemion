@@ -10,12 +10,16 @@
     "engines": {
         "node": "*"
     },
-    "main": "./dist/main.js",
-    "types": "./dist/main.d.ts",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "typescript": {
+        "definition": "./dist/index.d.ts"
+    },
     "devDependencies": {
         "@jest/globals": "^29.4.3",
         "@types/jest": "^29.4.0",
         "browserify": "^17.0.0",
+        "dts-bundle": "^0.7.3",
         "gulp": "^4.0.0",
         "gulp-rename": "^2.0.0",
         "gulp-run-command": "^0.0.10",

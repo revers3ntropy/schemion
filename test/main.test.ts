@@ -5,7 +5,7 @@ import { Alike, Equal, Expect, ExpectFalse, IsAny, ExpectExtends, NotAny } from 
 class Example {}
 class Child extends Example {}
 
-function getBoolean(): boolean { return true; }
+const getBoolean = () => true;
 
 describe('`matches` Primitives', () => {
     test('Matches number', () => {
