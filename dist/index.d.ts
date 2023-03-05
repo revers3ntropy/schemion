@@ -19,7 +19,9 @@ declare module 'schemion' {
     } ? {
         [K in keyof T]: MatchResult<T[K]>;
     } : never;
-    export function matches<T extends Schema>(o: unknown, schema: T, { shouldValidateSchema }?: {
+    export function matches<T extends Schema>(o: unknown, schema: T, defaults?: T extends object ? {
+        [P in keyof T]?: MatchResult<T[P]>;
+    } | undefined : undefined, { shouldValidateSchema, }?: {
         shouldValidateSchema?: boolean;
     }): o is MatchResult<T>;
     export {};

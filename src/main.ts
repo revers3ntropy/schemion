@@ -15,6 +15,7 @@ type TypeMap = {
     any: any
     symbol: symbol;
 }
+
 const typeMapKeys = [
     'string',
     'number',
@@ -52,19 +53,49 @@ function matchesAtomic (o: unknown, schema: keyof TypeMap): boolean {
 function matchArray<T extends Schema> (o: unknown, schema: T[]): o is MatchResult<T> {
     return Array.isArray(o)
         && o.length === schema.length
-        && o.every((v, i) => matches(v, schema[i], {
+        && o.every((v, i) => matches(v, schema[i], undefined, {
             shouldValidateSchema: false
         }));
 }
 
+function matchObject<T extends { [k: string]: Schema }, D> (
+    o: unknown,
+    schema: T,
+    defaults: { [P in keyof T]?: MatchResult<T[P]> } = {}
+): o is MatchResult<T> {
+    if (typeof o !== 'object' || o === null) {
+        return false;
+    }
+
+    // clone so can safely mutate (adding defaults)
+    let objClone: Record<string, unknown> = { ...o as Record<string, unknown> };
+    for (const key in defaults) {
+        objClone[key] ??= defaults[key];
+    }
+
+    for (const key in schema) {
+        if (!matches(objClone[key], schema[key], undefined, {
+            shouldValidateSchema: false
+        })) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
 function validateSchema (schema: unknown): asserts schema is Schema {
     if (typeof schema === 'string') {
-        if (!typeMapKeys.includes(schema)) {
+        if (typeMapKeys.indexOf(schema) < 0) {
             throw new SchemaError('Invalid schema');
         }
 
     } else if (Array.isArray(schema)) {
         schema.forEach(validateSchema);
+
+    } else if (typeof schema === 'object') {
+        Object.keys(schema)
+            .forEach(k => validateSchema(schema[k as keyof typeof schema]))
 
     } else {
         throw new SchemaError('Invalid schema');
@@ -74,8 +105,13 @@ function validateSchema (schema: unknown): asserts schema is Schema {
 export function matches<T extends Schema> (
     o: unknown,
     schema: T,
+    defaults: T extends object
+        ? { [P in keyof T]?: MatchResult<T[P]> } | undefined
+        : undefined = undefined,
     {
-        shouldValidateSchema = true
+        shouldValidateSchema = true,
+    }: {
+        shouldValidateSchema?: boolean;
     } = {}
 ): o is MatchResult<T> {
     if (shouldValidateSchema) {
@@ -83,12 +119,14 @@ export function matches<T extends Schema> (
     }
 
     if (typeof schema === 'string') {
-        return matchesAtomic(o, schema);
-
-    } else if (Array.isArray(schema)) {
-        return matchArray(o, schema);
-
-    } else {
-        return false;
+        return matchesAtomic(o, schema as keyof TypeMap);
     }
+    if (Array.isArray(schema)) {
+        return matchArray(o, schema);
+    }
+    if (typeof schema === 'object') {
+        return matchObject(o, schema, defaults);
+    }
+
+    return false;
 }
