@@ -1,3 +1,4 @@
+// replaced at compile time with version from package.json
 class SchemaError extends Error {
     constructor (message: string) {
         super(message);
@@ -144,3 +145,12 @@ export function matches<T extends Schema> (
 
     return false;
 }
+
+export const VERSION = '__CONST_VERSION';
+
+const schemion = {
+    matches,
+    VERSION
+};
+
+export default schemion;

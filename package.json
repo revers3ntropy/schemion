@@ -1,6 +1,6 @@
 {
     "name": "schemion",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "Object schema validation",
     "author": {
         "name": "revers3ntropy",
@@ -46,5 +46,8 @@
     "scripts": {
         "test": "jest",
         "build": "gulp"
+    },
+    "dependencies": {
+        "gulp-replace": "^1.1.4"
     }
 }

@@ -34,6 +34,11 @@ declare module 'schemion' {
     export function matches<T extends Schema>(o: unknown, schema: T, defaults?: T extends object ? {
         [P in keyof T]?: SchemaResult<T[P]>;
     } | null : null, config?: Config): o is SchemaResult<T>;
-    export {};
+    export const VERSION = "__CONST_VERSION";
+    const schemion: {
+        matches: typeof matches;
+        VERSION: string;
+    };
+    export default schemion;
 }
 

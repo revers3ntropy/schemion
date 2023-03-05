@@ -8,9 +8,11 @@ const buffer = require("vinyl-buffer");
 const run = require("gulp-run-command").default;
 const fs = require("fs");
 const dts = require('dts-bundle');
+const replace = require('gulp-replace');
 
 const PACKAGE_JSON = JSON.parse(String(fs.readFileSync("./package.json")));
 const { name: moduleName } = PACKAGE_JSON;
+
 
 function compileTs () {
 	return browserify({
@@ -26,6 +28,7 @@ function compileTs () {
 		.pipe(buffer())
 		.pipe(sourcemaps.init({ loadMaps: true }))
 		.pipe(terser())
+		.pipe(replace('__CONST_VERSION', PACKAGE_JSON.version))
 		.pipe(sourcemaps.write("./"))
 		.pipe(gulp.dest("dist"));
 }
