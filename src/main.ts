@@ -52,7 +52,9 @@ function matchesAtomic (o: unknown, schema: keyof TypeMap): boolean {
 function matchArray<T extends Schema> (o: unknown, schema: T[]): o is MatchResult<T> {
     return Array.isArray(o)
         && o.length === schema.length
-        && o.every((v, i) => matches(v, schema[i], false));
+        && o.every((v, i) => matches(v, schema[i], {
+            shouldValidateSchema: false
+        }));
 }
 
 function validateSchema (schema: unknown): asserts schema is Schema {
@@ -72,7 +74,9 @@ function validateSchema (schema: unknown): asserts schema is Schema {
 export function matches<T extends Schema> (
     o: unknown,
     schema: T,
-    shouldValidateSchema = true
+    {
+        shouldValidateSchema = true
+    } = {}
 ): o is MatchResult<T> {
     if (shouldValidateSchema) {
         validateSchema(schema);

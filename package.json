@@ -1,11 +1,10 @@
 {
-    "name": "object-schema",
+    "name": "schemion",
     "version": "0.0.2",
     "description": "Object schema validation",
-    "author": "revers3ntropy",
-    "scripts": {
-        "test": "jest",
-        "build": "gulp"
+    "author": {
+        "name": "revers3ntropy",
+        "url": "https://revers3ntropy.com"
     },
     "engines": {
         "node": "*"
@@ -14,6 +13,15 @@
     "types": "./dist/index.d.ts",
     "typescript": {
         "definition": "./dist/index.d.ts"
+    },
+    "files": [
+        "dist/index/d.ts",
+        "dist/index.js",
+        "dist/index.js.map"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/revers3ntropy/schemion.git"
     },
     "devDependencies": {
         "@jest/globals": "^29.4.3",
@@ -34,5 +42,9 @@
         "typescript": "^4.9.5",
         "vinyl-buffer": "^1.0.1",
         "vinyl-source-stream": "^2.0.0"
+    },
+    "scripts": {
+        "test": "jest",
+        "build": "gulp"
     }
 }
