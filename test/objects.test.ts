@@ -113,4 +113,42 @@ describe('`matches` Objects', () => {
         expect(matches({ b: 2 }, { a: 'number', b: 'number' }, { a: 1, b: 3 }))
             .toBe(true);
     });
+
+    test('Nested Objects', () => {
+        expect(matches({ a: { b: 1 } }, { a: { b: 'number' } }))
+            .toBe(true);
+        expect(matches({ a: { b: 1 } }, { a: { b: 'string' } }))
+            .toBe(false);
+        expect(matches({ a: { b: '', c: '' } }, { a: { b: 'string' } }))
+            .toBe(true);
+        expect(matches({ a: { b: '', c: '' }, d: 1 }, { a: { b: 'string' } }))
+            .toBe(true);
+        expect(matches({ a: { b: { b: '' }, c: '' }, d: 1 }, { a: { b: 'string' } }))
+            .toBe(false);
+    });
+
+    test('Strict object matching', () => {
+        expect(matches(
+            { a: 1, b: 2 },
+            { a: 'number' },
+            null,
+            { strict: true }
+        ))
+            .toBe(false);
+        expect(matches(
+            { a: 1, b: 2 },
+            { a: 'number' },
+            null,
+            { strict: false }
+        ))
+            .toBe(true);
+
+        expect(matches(
+            { a: 1 },
+            { a: 'number' },
+            null,
+            { strict: true }
+        ))
+            .toBe(true);
+    })
 });

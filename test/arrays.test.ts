@@ -7,6 +7,8 @@ class Example {}
 describe('`matches` Arrays', () => {
     test('Matches array of numbers', () => {
         expect(matches([1, 2, 3], ['number']))
+            .toBe(true);
+        expect(matches([1, 2, 3], ['number'], null, { strict: true }))
             .toBe(false);
         expect(matches([1, 2, 3], ['string']))
             .toBe(false);
@@ -17,6 +19,8 @@ describe('`matches` Arrays', () => {
         expect(matches('', ['string']))
             .toBe(false);
         expect(matches([1, 2, 3], ['number', 'number']))
+            .toBe(true);
+        expect(matches([1, 2, 3], ['number', 'number'], null, { strict: true }))
             .toBe(false);
         expect(matches([1, 2, 3], ['number', 'number', 'number']))
             .toBe(true);
@@ -33,22 +37,32 @@ describe('`matches` Arrays', () => {
         expect(matches([], []))
             .toBe(true);
         expect(matches([ 2 ], []))
+            .toBe(true);
+        expect(matches([ 2 ], [], null, { strict: true }))
             .toBe(false);
         expect(matches([[]], []))
+            .toBe(true);
+        expect(matches([[]], [], null, { strict: true }))
             .toBe(false);
     });
 
     test(`Matches 'any'`, () => {
-        expect(matches([], ['any']))
+        expect(matches([], ['any'], null, { strict: true }))
             .toBe(false);
+        expect(matches([], ['any']))
+            .toBe(true);
         expect(matches([1], ['any']))
             .toBe(true);
         expect(matches([1, 2], ['any']))
+            .toBe(true);
+        expect(matches([1, 2], ['any'], null, { strict: true }))
             .toBe(false);
         expect(matches([1, '2'], ['number', 'any']))
             .toBe(true);
-        expect(matches([1, '2', true], ['any']))
+        expect(matches([1, '2', true], ['any'], null, { strict: true }))
             .toBe(false);
+        expect(matches([1, '2', true], ['any']))
+            .toBe(true);
         expect(matches([1, '2', true], 'any'))
             .toBe(true);
         expect(matches(Example, 'any'))
