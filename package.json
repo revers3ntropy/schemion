@@ -1,6 +1,6 @@
 {
     "name": "schemion",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "description": "Object schema validation",
     "author": {
         "name": "revers3ntropy",
@@ -15,7 +15,7 @@
         "definition": "./dist/index.d.ts"
     },
     "files": [
-        "dist/index/d.ts",
+        "dist/index.d.ts",
         "dist/index.js",
         "dist/index.js.map"
     ],
