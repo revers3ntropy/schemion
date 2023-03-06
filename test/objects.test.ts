@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { matches } from '../src/main';
+import { Equal, Expect } from "./test";
 
 describe('`matches` Objects', () => {
     test('Empty cases', () => {
@@ -112,6 +113,18 @@ describe('`matches` Objects', () => {
             .toBe(false);
         expect(matches({ b: 2 }, { a: 'number', b: 'number' }, { a: 1, b: 3 }))
             .toBe(true);
+    });
+
+    test('Default values appear in object', () => {
+        const a = {};
+        if (matches(a, { a: 'string' }, { a: 'foo' })) {
+            expect(a).toEqual({ a: 'foo' });
+            type _ = [
+                Expect<Equal<typeof a['a'], string>>,
+            ];
+        } else {
+            expect(1).toBe(0);
+        }
     });
 
     test('Nested Objects', () => {

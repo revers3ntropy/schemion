@@ -44,7 +44,7 @@ export type SchemaResult<T> =
     T extends Schema[]
         ? SchemaResult<T[number]>[]
         :
-    T extends { [ key: string ]: Schema }
+    T extends object
         ? { [K in keyof T]: SchemaResult<T[K]> }
         :
     never;
@@ -74,24 +74,26 @@ export function matchObject<T extends { [k: string]: Schema }, D> (
     if (typeof o !== 'object' || o === null) {
         return false;
     }
-
-    // clone so can safely mutate (adding defaults)
-    let objClone: Record<string, unknown> = { ...o as Record<string, unknown> };
     for (const key in defaults) {
-        objClone[key] ??= defaults[key];
+        (o as Record<string, unknown>)[key] ??= defaults[key];
     }
 
     if (config.strict) {
-        if (Object.keys(objClone).length !== Object.keys(schema).length) {
+        if (Object.keys(o).length !== Object.keys(schema).length) {
             return false;
         }
     }
 
     for (const key in schema) {
-        if (!matches(objClone[key], schema[key], null, {
-            ...config,
-            shouldValidateSchema: false
-        })) {
+        if (!matches(
+            (o as Record<string, unknown>)[key],
+            schema[key],
+            null,
+            {
+                ...config,
+                shouldValidateSchema: false
+            }
+        )) {
             return false;
         }
     }

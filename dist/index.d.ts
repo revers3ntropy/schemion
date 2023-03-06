@@ -17,9 +17,7 @@ type TypeMap = {
 export type Schema = keyof TypeMap | Schema[] | {
     [key: string]: Schema;
 };
-export type SchemaResult<T> = T extends keyof TypeMap ? TypeMap[T] : T extends Schema[] ? SchemaResult<T[number]>[] : T extends {
-    [key: string]: Schema;
-} ? {
+export type SchemaResult<T> = T extends keyof TypeMap ? TypeMap[T] : T extends Schema[] ? SchemaResult<T[number]>[] : T extends object ? {
     [K in keyof T]: SchemaResult<T[K]>;
 } : never;
 export function matchesAtomic(o: unknown, schema: keyof TypeMap, _: Config): boolean;
@@ -33,7 +31,7 @@ export function validateSchema(schema: unknown): asserts schema is Schema;
 export function matches<T extends Schema>(o: unknown, schema: T, defaults?: T extends object ? {
     [P in keyof T]?: SchemaResult<T[P]>;
 } | null : null, config?: Config): o is SchemaResult<T>;
-export const VERSION = "0.0.8";
+export const VERSION = "0.0.9";
 const schemion: {
     matches: typeof matches;
     VERSION: string;
