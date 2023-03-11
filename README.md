@@ -21,24 +21,36 @@ schemion.matches(
     { foo: [ 'string', 'number', { bar: 'any' } ] }
 ); // true
 
-// First rate TypeScript support
+// TypeScript support
 const foo = { bar: 'bar' };
 if (schemion.matches(foo, { bar: 'string' })) {
-    // foo is now typed as { foo: string }
+    foo.bar;
+    //  ^? string
+    foo.foo;
+    //  ^? error, foo is not a property of `{ bar: string }`
 }
 
-// supply default values
+// supply default values, which are applied to the object
+const myObj = { foo: 'bar' };
 schemion.matches(
-    { foo: 'bar' },
+    myObj,
     { foo: 'string', bar: 'number' },
     { bar: 123 }
 ); // true
+myObj.bar; // 123
 
 // strict mode
 schemion.matches(
     { foo: 'bar', foobar: 10 },  // object
     { foo: 'string' },           // schema
-    null,                        // no default values
+    null,                        // default values
     { strict: true }             // config
-); // false, but true if `strict = false`
+); // false, but true if `strict: false`
+
+
+// match primitive types
+schemion.matches(123, 'number'); // true
+schemion.matches(123, 'string'); // false
+schemion.matches([], 'any');     // true
+schemion.matches([], 'object');  // true
 ```
